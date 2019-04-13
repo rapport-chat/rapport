@@ -5,11 +5,11 @@ import {
   createBottomTabNavigator
 } from "react-navigation";
 
-import TabBarIcon from "../components/TabBarIcon";
-import ChatsScreen from "../screens/ChatsScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import TabBarIcon from "app/components/TabBarIcon";
+import ChatsScreen from "app/screens/ChatsScreen";
+import SettingsScreen from "app/screens/SettingsScreen";
 import CustomTabBarLabel from "./CustomTabBarLabel";
-import Colors from 'app/constants/Colors';
+import DirectChatScreen from "app/screens/DirectChatScreen";
  
 const ChatStack = createStackNavigator({
   Home: ChatsScreen
@@ -28,7 +28,7 @@ ChatStack.navigationOptions = {
 };
 
 const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen
+  Settings: DirectChatScreen
 });
 
 SettingsStack.navigationOptions = {
