@@ -1,22 +1,27 @@
 import React from "react";
 import { Platform } from "react-native";
-import { createStackNavigator, createDrawerNavigator } from "react-navigation";
+import { createStackNavigator, createDrawerNavigator, createSwitchNavigator } from "react-navigation";
 
 import ChatsScreen from "app/screens/ChatsScreen";
 import SettingsScreen from "app/screens/SettingsScreen";
 import DirectChatScreen from "app/screens/DirectChatScreen";
+import AuthScreen from "app/screens/AuthScreen.js";
 
-const ChatStack = createStackNavigator({
-  Home: ChatsScreen
-});
+// const ChatStack = createStackNavigator({
+//   Home: ChatsScreen
+// });
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen
-});
+// const SettingsStack = createStackNavigator({
+//   Settings: SettingsScreen
+// });
 
-const DirectChat = createStackNavigator({
-  DirectChat: DirectChatScreen
-});
+// const DirectChat = createStackNavigator({
+//   DirectChat: DirectChatScreen
+// });
+
+// const AuthStack = createStackNavigator({
+//   Auth: AuthScreen
+// });
 
 const MyDrawerNavigatorConfig = { 
   drawerBackgroundColor: "#342E37",
@@ -27,10 +32,24 @@ const MyDrawerNavigatorConfig = {
   },
  };
 
-export default createDrawerNavigator(
+// export default createDrawerNavigator(
+//   {
+//     Auth: AuthStack,
+//     Chats: ChatStack,
+//     Settings: SettingsStackx
+//   },
+//   MyDrawerNavigatorConfig
+// );
+
+const AppStack = createStackNavigator({ Home: ChatsScreen, Settings: SettingsScreen });
+const AuthStack = createStackNavigator({ SignIn: AuthScreen });
+
+export default createSwitchNavigator(
   {
-    Chats: ChatStack,
-    Settings: SettingsStack
+    App: AppStack,
+    Auth: AuthStack,
   },
-  MyDrawerNavigatorConfig
+  {
+    initialRouteName: 'Auth',
+  }
 );
