@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { SafeAreaView } from "react-navigation";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "app/constants/Colors";
 
@@ -32,50 +33,49 @@ export default class DirectChatsScreen extends React.Component {
       "User",
       "User",
       "User",
-      "User",
+      "User"
     ];
-    var groupChats = [
-      "Development",
-      "Accounting",
-      "DevOps",
-    ];
+    var groupChats = ["Development", "Accounting", "DevOps"];
 
     return (
-      <View style={styles.container}>
-        <SectionList
-          sections={[
-            {
-              title: "Group Chats",
-              data: groupChats
-            },
-            {
-              title: "Direct Chats",
-              data: directChats
-            }
-          ]}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                alert(item);
-              }}
-              style={styles.itemContainer}
-            >
-              <Text style={styles.item}>{item}</Text>
-              <Text style={styles.subItem}>+382 9232322: Hey, how are you? 👋</Text>
-              <Ionicons
-                style={styles.arrow}
-                size={30}
-                name="ios-arrow-forward"
-                color={Colors.subtleIcon}
-              />
-            </TouchableOpacity>
-          )}
-          renderSectionHeader={({ section }) => (
-            <Text style={styles.sectionHeader}>{section.title}</Text>
-          )}
-          keyExtractor={(item, index) => index}
-        />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+          <SectionList
+            sections={[
+              {
+                title: "Group Chats",
+                data: groupChats
+              },
+              {
+                title: "Direct Chats",
+                data: directChats
+              }
+            ]}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                // onPress={() => this.props.navigation.navigate("DirectChat")}
+                onPress={() => this.props.navigation.navigation}
+                style={styles.itemContainer}
+              >
+                <Text style={styles.item}>{item}</Text>
+                <Text style={styles.subItem}>
+                  +382 9232322: Hey, how are you? 👋
+                </Text>
+                <Ionicons
+                  style={styles.arrow}
+                  size={30}
+                  name="ios-arrow-forward"
+                  color={Colors.subtleIcon}
+                />
+              </TouchableOpacity>
+            )}
+            renderSectionHeader={({ section }) => (
+              <Text style={styles.sectionHeader}>{section.title}</Text>
+            )}
+            keyExtractor={(item, index) => index}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
 }

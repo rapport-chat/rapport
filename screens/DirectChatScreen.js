@@ -1,40 +1,56 @@
-import { AppLoading, Asset, Linking } from 'expo';
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Bubble, GiftedChat, SystemMessage } from 'react-native-gifted-chat';
+import { AppLoading, Asset, Linking } from "expo";
+import React, { Component } from "react";
+import { StyleSheet, View, Button } from "react-native";
+import { SafeAreaView } from "react-navigation";
+import { Bubble, GiftedChat, SystemMessage } from "react-native-gifted-chat";
 
-import AccessoryBar from './test/AccessoryBar';
-import CustomActions from './test/CustomActions';
-import CustomView from './test/CustomView';
-import messagesData from './test/data/messages';
-import earlierMessages from './test/data/earlierMessages';
+import AccessoryBar from "./giftedChat/AccessoryBar";
+import CustomActions from "./giftedChat/CustomActions";
+import CustomView from "./giftedChat/CustomView";
+import messagesData from "./giftedChat/data/messages";
+import earlierMessages from "./giftedChat/data/earlierMessages";
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1 }
 });
 
-const filterBotMessages = (message) => !message.system && message.user && message.user._id && message.user._id === 2;
-const findStep = (step) => (_, index) => index === step - 1;
+const filterBotMessages = message =>
+  !message.system && message.user && message.user._id && message.user._id === 2;
+const findStep = step => (_, index) => index === step - 1;
 
 const user = {
   _id: 1,
-  name: 'Developer',
+  name: "Developer"
 };
 
 const otherUser = {
   _id: 2,
-  name: 'React Native',
-  avatar: 'https://facebook.github.io/react/img/logo_og.png',
+  name: "React Native",
+  avatar: "https://facebook.github.io/react/img/logo_og.png"
 };
 
 export default class App extends React.Component {
+  static navigationOptions = {
+    headerStyle: {
+      backgroundColor: "#342E37"
+    },
+    headerLeft: (
+      <Button
+        onPress={() => alert('This is a button!')}
+        title="Info"
+        color="#fff"
+      />
+    ),
+    headerTintColor: "#fff",
+    title: "Chats"
+  };
 
   state = {
     step: 0,
     messages: [],
     loadEarlier: true,
     typingText: null,
-    isLoadingEarlier: false,
+    isLoadingEarlier: false
   };
 
   _isMounted = false;
@@ -42,7 +58,10 @@ export default class App extends React.Component {
   async componentWillMount() {
     this._isMounted = true;
     // init with only system messages
-    this.setState({ messages: messagesData.filter((message) => message.system), appIsReady: true });
+    this.setState({
+      messages: messagesData.filter(message => message.system),
+      appIsReady: true
+    });
   }
 
   componentWillUnmount() {
@@ -50,19 +69,22 @@ export default class App extends React.Component {
   }
 
   onLoadEarlier = () => {
-    this.setState((previousState) => {
+    this.setState(previousState => {
       return {
-        isLoadingEarlier: true,
+        isLoadingEarlier: true
       };
     });
 
     setTimeout(() => {
       if (this._isMounted === true) {
-        this.setState((previousState) => {
+        this.setState(previousState => {
           return {
-            messages: GiftedChat.prepend(previousState.messages, earlierMessages),
+            messages: GiftedChat.prepend(
+              previousState.messages,
+              earlierMessages
+            ),
             loadEarlier: false,
-            isLoadingEarlier: false,
+            isLoadingEarlier: false
           };
         });
       }
@@ -71,11 +93,11 @@ export default class App extends React.Component {
 
   onSend = (messages = []) => {
     const step = this.state.step + 1;
-    this.setState((previousState) => {
+    this.setState(previousState => {
       const sentMessages = [{ ...messages[0], sent: true, received: true }];
       return {
         messages: GiftedChat.append(previousState.messages, sentMessages),
-        step,
+        step
       };
     });
     // for demo purpose
@@ -88,19 +110,19 @@ export default class App extends React.Component {
       .filter(filterBotMessages)
       .find(findStep(step));
     if (newMessage) {
-      this.setState((previousState) => ({
-        messages: GiftedChat.append(previousState.messages, newMessage),
+      this.setState(previousState => ({
+        messages: GiftedChat.append(previousState.messages, newMessage)
       }));
     }
   };
 
-  parsePatterns = (linkStyle) => {
+  parsePatterns = linkStyle => {
     return [
       {
         pattern: /#(\w+)/,
-        style: { ...linkStyle, color: 'darkorange' },
-        onPress: () => Linking.openURL('http://gifted.chat'),
-      },
+        style: { ...linkStyle, color: "darkorange" },
+        onPress: () => Linking.openURL("http://gifted.chat")
+      }
     ];
   };
 
@@ -108,64 +130,64 @@ export default class App extends React.Component {
     return <CustomView {...props} />;
   }
 
-  onReceive = (text) => {
-    this.setState((previousState) => {
+  onReceive = text => {
+    this.setState(previousState => {
       return {
         messages: GiftedChat.append(previousState.messages, {
           _id: Math.round(Math.random() * 1000000),
           text,
           createdAt: new Date(),
-          user: otherUser,
-        }),
+          user: otherUser
+        })
       };
     });
   };
 
   onSendFromUser = (messages = []) => {
     const createdAt = new Date();
-    const messagesToUpload = messages.map((message) => ({
+    const messagesToUpload = messages.map(message => ({
       ...message,
       user,
       createdAt,
-      _id: Math.round(Math.random() * 1000000),
+      _id: Math.round(Math.random() * 1000000)
     }));
     this.onSend(messagesToUpload);
   };
 
   renderAccessory = () => <AccessoryBar onSend={this.onSendFromUser} />;
 
-  renderCustomActions = (props) => {
+  renderCustomActions = props => {
     return <CustomActions {...props} onSend={this.onSendFromUser} />;
   };
 
-  renderBubble = (props) => {
+  renderBubble = props => {
     return (
       <Bubble
         {...props}
         wrapperStyle={{
           left: {
-            backgroundColor: '#f0f0f0',
-          },
+            backgroundColor: "#f0f0f0"
+          }
         }}
       />
     );
   };
 
-  renderSystemMessage = (props) => {
+  renderSystemMessage = props => {
     return (
       <SystemMessage
         {...props}
         containerStyle={{
-          marginBottom: 15,
+          marginBottom: 15
         }}
         textStyle={{
-          fontSize: 14,
+          fontSize: 14
         }}
       />
     );
   };
 
-  renderFooter = (props) => {
+  renderFooter = props => {
     if (this.state.typingText) {
       return (
         <View style={styles.footerContainer}>
@@ -181,25 +203,31 @@ export default class App extends React.Component {
       return <AppLoading />;
     }
     return (
-      <View style={styles.container} accessible accessibilityLabel="main" testID="main">
-        <GiftedChat
-          messages={this.state.messages}
-          onSend={this.onSend}
-          keyboardShouldPersistTaps="never"
-          loadEarlier={this.state.loadEarlier}
-          onLoadEarlier={this.onLoadEarlier}
-          isLoadingEarlier={this.state.isLoadingEarlier}
-          parsePatterns={this.parsePatterns}
-          user={user}
-          renderAccessory={this.renderAccessory}
-          renderActions={this.renderCustomActions}
-          renderBubble={this.renderBubble}
-          renderSystemMessage={this.renderSystemMessage}
-          renderCustomView={this.renderCustomView}
-          renderFooter={this.renderFooter}
-        />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View
+          style={styles.container}
+          accessible
+          accessibilityLabel="main"
+          testID="main"
+        >
+          <GiftedChat
+            messages={this.state.messages}
+            onSend={this.onSend}
+            keyboardShouldPersistTaps="never"
+            loadEarlier={this.state.loadEarlier}
+            onLoadEarlier={this.onLoadEarlier}
+            isLoadingEarlier={this.state.isLoadingEarlier}
+            parsePatterns={this.parsePatterns}
+            user={user}
+            renderAccessory={this.renderAccessory}
+            renderActions={this.renderCustomActions}
+            renderBubble={this.renderBubble}
+            renderSystemMessage={this.renderSystemMessage}
+            renderCustomView={this.renderCustomView}
+            renderFooter={this.renderFooter}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
-
 }
