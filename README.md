@@ -1,12 +1,12 @@
-# Rapport UI Tests 
+# Rapport 
 ### Running the application with Windows
 The first step is to clone the repository.
 ```bash
-git pull https://github.com/rapport-chat/ui-test.git
+git pull https://github.com/rapport-chat/rapport.git
 ```
 After that you need to install the node modules.
 ```bash
-cd ui-test
+cd rapport
 npm install
 ```
 You can now run the application with:
