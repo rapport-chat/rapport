@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Button } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import { Bubble, GiftedChat, SystemMessage } from "react-native-gifted-chat";
+import Colors from "app/constants/Colors";
 
 import AccessoryBar from "./giftedChat/AccessoryBar";
 import CustomActions from "./giftedChat/CustomActions";
@@ -32,17 +33,17 @@ const otherUser = {
 export default class App extends React.Component {
   static navigationOptions = {
     headerStyle: {
-      backgroundColor: "#342E37"
+      backgroundColor: Colors.primary
     },
-    headerLeft: (
-      <Button
-        onPress={() => alert('This is a button!')}
-        title="Info"
-        color="#fff"
-      />
-    ),
+    // headerLeft: (
+    //   <Button
+    //     onPress={() => alert('This is a button!')}
+    //     title="Info"
+    //     color="#fff"
+    //   />
+    // ),
     headerTintColor: "#fff",
-    title: "Chats"
+    title: "Direct Chat"
   };
 
   state = {
