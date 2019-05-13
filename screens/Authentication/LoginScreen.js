@@ -72,10 +72,27 @@ export default class LoginScreen extends Component {
     if(!this._validateForm()){
       return;
     }
-    this._saveServerUrl(this.state.serverUrl);
-    if (this.state.username === "test" && this.state.password === "test") {
-      this.props.navigation.navigate("App");
+    var user = {
+      username : this.state.username,
+      password : this.state.password
     }
+
+  var qs = require('qs');
+  fetch(this.state.serverUrl + '/parse/login?' + qs.stringify(user), {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'X-Parse-Application-Id' : 'rapportApp'
+  }}).then((response) => response.json())
+  .then((responseJson) => {
+    console.log(responseJson);
+    if(responseJson.objectId != null){
+      this._saveServerUrl(this.state.serverUrl);
+      this._saveUserId(responseJson.objectId);
+      this.props.navigation.navigate("App");
+        }
+      }
+    )
   }
 
   _saveServerUrl = async serverUrl => {
@@ -86,8 +103,21 @@ export default class LoginScreen extends Component {
       console.log(error.message);
     }
   };
+
+  _saveUserId = async userId => {
+    try {
+      await AsyncStorage.setItem("userId", userId);
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+  };
   
   _validateForm() {
+    if(this.state == null){
+      return false;
+    }
+    
     if(this.state.serverUrl === "" || this.state.serverUrl === undefined){
       alert("Please enter a server url!")
       return false;
