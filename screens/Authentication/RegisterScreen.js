@@ -78,17 +78,64 @@ export default class LoginScreen extends Component {
     );
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   onRegisterPress() {
     if (!this._validateForm()) {
       return;
     }
+    var qs = require('qs');
+
+    var user = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      username: this.state.username,
+      password: this.state.password
+    }
+
+    fetch(this.state.serverUrl + '/parse/users?', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Parse-Application-Id': 'rapportApp'
+      },
+      body: JSON.stringify(user),
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        if (responseJson.objectId != null) {
+          this._saveServerUrl(this.state.serverUrl);
+          this._saveUserId(responseJson.objectId);
+          this.props.navigation.navigate("App");
+        }
+      })
   }
 
+  _saveServerUrl = async serverUrl => {
+    try {
+      await AsyncStorage.setItem("serverUrl", serverUrl);
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+  };
+
+  _saveUserId = async userId => {
+    try {
+      await AsyncStorage.setItem("userId", userId);
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+  };
+
   _validateForm() {
+
+   if(this.state == null){
+      return false;
+    }
     if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
       alert("Please enter a server url!");
       return false;
