@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   Keyboard,
   Text,
-  Alert,
+  AsyncStorage,
   View,
   TextInput,
   TouchableWithoutFeedback,
@@ -28,6 +28,12 @@ export default class LoginScreen extends Component {
             <View style={styles.loginFormView}>
               <View style={styles.inputContainer}>
                 <Text style={styles.logoText}>Rapport</Text>
+                <TextInput
+                  placeholder="https://server-url.com:1337"
+                  placeholderColor="#c4c3cb"
+                  onChangeText={serverUrl => this.setState({ serverUrl })}
+                  style={styles.loginFormTextInput}
+                />
                 <TextInput
                   placeholder="Username"
                   placeholderColor="#c4c3cb"
@@ -63,10 +69,41 @@ export default class LoginScreen extends Component {
   componentWillUnmount() {}
 
   onLoginPress() {
+    if(!this._validateForm()){
+      return;
+    }
+    this._saveServerUrl(this.state.serverUrl);
     if (this.state.username === "test" && this.state.password === "test") {
-      this.props.navigation.navigate('App');
+      this.props.navigation.navigate("App");
     }
   }
+
+  _saveServerUrl = async serverUrl => {
+    try {
+      await AsyncStorage.setItem("serverUrl", serverUrl);
+    } catch (error) {
+      // Error retrieving data
+      console.log(error.message);
+    }
+  };
+  
+  _validateForm() {
+    if(this.state.serverUrl === "" || this.state.serverUrl === undefined){
+      alert("Please enter a server url!")
+      return false;
+    }
+    if(this.state.username === "" || this.state.username === undefined){
+      alert("Please enter a username!")
+      return false;
+    }
+    if(this.state.password === "" || this.state.password === undefined){
+      alert("Please enter a password!")
+      return false;
+    }
+
+    return true;
+  }
+
 
   _showRegister = () => {
     this.props.navigation.navigate("Register");
