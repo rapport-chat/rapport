@@ -64,79 +64,86 @@ export default class LoginScreen extends Component {
     );
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   onLoginPress() {
     if (!this._validateForm()) {
-      return;
+      return; //Don't continue with login, form is not validated
     }
-    var user = {
+
+    let qs = require("qs");
+    let user = {
       username: this.state.username,
       password: this.state.password
-    }
+    };
 
-    var qs = require('qs');
-    fetch(this.state.serverUrl + '/parse/login?' + qs.stringify(user), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-Parse-Application-Id': 'rapportApp'
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        if (responseJson.objectId != null) {
-          this._saveServerUrl(this.state.serverUrl);
-          this._saveUserId(responseJson.objectId);
-          this.props.navigation.navigate("App");
-        }
-      }).catch(
-        alert("Can't connect to Server! Please check your Configuration!")
-      )
+    this._sendLoginRequest(
+      this.state.serverUrl + "/parse/login?" + qs.stringify(user)
+    );
   }
 
-  _saveServerUrl = async serverUrl => {
+  //Sends login request to server
+  _sendLoginRequest(requestUrl) {
+    fetch(requestUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Parse-Application-Id": "rapportApp"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this._handleLoginResponse(responseJson);
+      })
+      .catch(
+        alert("Can't connect to Server! Please check your Configuration!")
+      );
+  }
+
+  //Handles response from server for the login request
+  _handleLoginResponse(responseJson) {
+    if (responseJson.objectId != null) {
+      this._saveToLocalStorage("serverUrl", this.state.serverUrl); //Save server url to local storage for future use
+      this._saveToLocalStorage("userId", responseJson.objectId); //Save User object id to local storage for future use
+      this.props.navigation.navigate("App"); //User is now logged in, redirect to app stack
+    } else {
+      console.error(responseJson); //Got empty response, log error
+    }
+  }
+
+  _saveToLocalStorage = async(key, value) => {
     try {
-      await AsyncStorage.setItem("serverUrl", serverUrl);
+      await AsyncStorage.setItem(key, value); //Save userId to local storage
     } catch (error) {
-      // Error retrieving data
-      console.log(error.message);
+      // Error storing data
+      console.error(error.message); 
     }
   };
 
-  _saveUserId = async userId => {
-    try {
-      await AsyncStorage.setItem("userId", userId);
-    } catch (error) {
-      // Error retrieving data
-      console.log(error.message);
-    }
-  };
-
+  //Validation for login form. Notifies user if anything is missing.
   _validateForm() {
     if (this.state == null) {
       return false;
     }
-
     if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
-      alert("Please enter a server url!")
+      alert("Please enter a server url!");
       return false;
     }
     if (this.state.username === "" || this.state.username === undefined) {
-      alert("Please enter a username!")
+      alert("Please enter a username!");
       return false;
     }
     if (this.state.password === "" || this.state.password === undefined) {
-      alert("Please enter a password!")
+      alert("Please enter a password!");
       return false;
     }
 
     return true;
   }
 
-
+  //Opens register screen
   _showRegister = () => {
     this.props.navigation.navigate("Register");
   };
