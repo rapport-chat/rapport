@@ -110,7 +110,9 @@ export default class LoginScreen extends Component {
           this._saveUserId(responseJson.objectId);
           this.props.navigation.navigate("App");
         }
-      })
+      }).catch(
+        alert("Can't connect to Server! Please check your Configuration!")
+      )
   }
 
   _saveServerUrl = async serverUrl => {

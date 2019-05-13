@@ -64,35 +64,37 @@ export default class LoginScreen extends Component {
     );
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   onLoginPress() {
-    if(!this._validateForm()){
+    if (!this._validateForm()) {
       return;
     }
     var user = {
-      username : this.state.username,
-      password : this.state.password
+      username: this.state.username,
+      password: this.state.password
     }
 
-  var qs = require('qs');
-  fetch(this.state.serverUrl + '/parse/login?' + qs.stringify(user), {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'X-Parse-Application-Id' : 'rapportApp'
-  }}).then((response) => response.json())
-  .then((responseJson) => {
-    console.log(responseJson);
-    if(responseJson.objectId != null){
-      this._saveServerUrl(this.state.serverUrl);
-      this._saveUserId(responseJson.objectId);
-      this.props.navigation.navigate("App");
-        }
+    var qs = require('qs');
+    fetch(this.state.serverUrl + '/parse/login?' + qs.stringify(user), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-Parse-Application-Id': 'rapportApp'
       }
-    )
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        if (responseJson.objectId != null) {
+          this._saveServerUrl(this.state.serverUrl);
+          this._saveUserId(responseJson.objectId);
+          this.props.navigation.navigate("App");
+        }
+      }).catch(
+        alert("Can't connect to Server! Please check your Configuration!")
+      )
   }
 
   _saveServerUrl = async serverUrl => {
@@ -112,21 +114,21 @@ export default class LoginScreen extends Component {
       console.log(error.message);
     }
   };
-  
+
   _validateForm() {
-    if(this.state == null){
+    if (this.state == null) {
       return false;
     }
-    
-    if(this.state.serverUrl === "" || this.state.serverUrl === undefined){
+
+    if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
       alert("Please enter a server url!")
       return false;
     }
-    if(this.state.username === "" || this.state.username === undefined){
+    if (this.state.username === "" || this.state.username === undefined) {
       alert("Please enter a username!")
       return false;
     }
-    if(this.state.password === "" || this.state.password === undefined){
+    if (this.state.password === "" || this.state.password === undefined) {
       alert("Please enter a password!")
       return false;
     }
