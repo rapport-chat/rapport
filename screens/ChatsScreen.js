@@ -15,7 +15,7 @@ import Colors from "app/constants/Colors";
 export default class DirectChatsScreen extends React.Component {
   static navigationOptions = {
     headerStyle: {
-      backgroundColor: "#342E37"
+      backgroundColor: Colors.primary
     },
     headerTintColor: "#fff",
     title: "Chats"
@@ -53,8 +53,8 @@ export default class DirectChatsScreen extends React.Component {
             ]}
             renderItem={({ item }) => (
               <TouchableOpacity
-                // onPress={() => this.props.navigation.navigate("DirectChat")}
-                onPress={() => this.props.navigation.navigation}
+                onPress={() => this.props.navigation.navigate("DirectChat")}
+                // onPress={() => this.props.navigation.navigation}
                 style={styles.itemContainer}
               >
                 <Text style={styles.item}>{item}</Text>

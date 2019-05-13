@@ -1,36 +1,35 @@
 import React from "react";
 import { Platform } from "react-native";
-import { createStackNavigator, createDrawerNavigator } from "react-navigation";
+import {
+  createStackNavigator,
+  createSwitchNavigator,
+  createDrawerNavigator
+} from "react-navigation";
 
 import ChatsScreen from "app/screens/ChatsScreen";
-import SettingsScreen from "app/screens/SettingsScreen";
 import DirectChatScreen from "app/screens/DirectChatScreen";
+import SettingsScreen from "app/screens/SettingsScreen";
+import LoginScreen from "../screens/Authentication/LoginScreen";
+import RegisterScreen from "../screens/Authentication/RegisterScreen";
+import AuthLoadingScreen from "../screens/Authentication/AuthLoadingScreen";
 
-const ChatStack = createStackNavigator({
-  Home: ChatsScreen
-});
-
-const SettingsStack = createStackNavigator({
+const AppStack = createStackNavigator({
+  Home: ChatsScreen,
+  DirectChat: DirectChatScreen,
   Settings: SettingsScreen
 });
-
-const DirectChat = createStackNavigator({
-  DirectChat: DirectChatScreen
+const AuthStack = createStackNavigator({
+  Login: LoginScreen,
+  Register: RegisterScreen
 });
 
-const MyDrawerNavigatorConfig = { 
-  drawerBackgroundColor: "#342E37",
-  contentOptions: {
-    activeTintColor: "#FFE9FF",
-    activeBackgroundColor: "#494A59",
-    inactiveTintColor: "#fff"
-  },
- };
-
-export default createDrawerNavigator(
+export default createSwitchNavigator(
   {
-    Chats: ChatStack,
-    Settings: SettingsStack
+    AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack
   },
-  MyDrawerNavigatorConfig
+  {
+    initialRouteName: "AuthLoading"
+  }
 );
