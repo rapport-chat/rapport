@@ -88,6 +88,11 @@ export default class LoginScreen extends Component {
     }
     var qs = require('qs');
 
+    if (!this.validInivationCode(this.state.invitationCode)) {
+      alert("Can't connect to Server! Please check your Configuration!");
+      return;
+    }
+
     var user = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -124,6 +129,28 @@ export default class LoginScreen extends Component {
     }
   };
 
+
+  validInivationCode(invitationCode) {
+    fetch(this.state.serverUrl + '/parse/classes/AuthenticationKey/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Parse-Application-Id': 'rapportApp'
+      },
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        var code = responseJson.code;
+        console.log(responseJson);
+        if (code != null && code === invitationCode) {
+          return true;
+        }
+      }).catch(function(){
+        return null;
+      }
+      )
+    return false;
+  }
+
   _saveUserId = async userId => {
     try {
       await AsyncStorage.setItem("userId", userId);
@@ -135,7 +162,7 @@ export default class LoginScreen extends Component {
 
   _validateForm() {
 
-   if(this.state == null){
+    if (this.state == null) {
       return false;
     }
     if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
