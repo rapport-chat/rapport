@@ -82,14 +82,29 @@ export default class LoginScreen extends Component {
 
   componentWillUnmount() { }
 
-  onRegisterPress() {
+  async onRegisterPress() {
     if (!this._validateForm()) {
       return;
     }
     var qs = require('qs');
 
-    if (!this.validInivationCode(this.state.invitationCode)) {
-      alert("Can't connect to Server! Please check your Configuration!");
+    var invCode;
+    await fetch(this.state.serverUrl + '/parse/classes/AuthenticationKey/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Parse-Application-Id': 'rapportApp'
+      },
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        invCode = responseJson.results[0].code;
+        console.log("invCode: " + invCode);
+      })
+
+
+    console.log(invCode);
+    if (this.state.invitationCode !== invCode) {
+      alert("InvitationCode invalid!");
       return;
     }
 
@@ -124,32 +139,9 @@ export default class LoginScreen extends Component {
     try {
       await AsyncStorage.setItem("serverUrl", serverUrl);
     } catch (error) {
-      // Error retrieving data
       console.log(error.message);
     }
   };
-
-
-  validInivationCode(invitationCode) {
-    fetch(this.state.serverUrl + '/parse/classes/AuthenticationKey/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Parse-Application-Id': 'rapportApp'
-      },
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        var code = responseJson.code;
-        console.log(responseJson);
-        if (code != null && code === invitationCode) {
-          return true;
-        }
-      }).catch(function(){
-        return null;
-      }
-      )
-    return false;
-  }
 
   _saveUserId = async userId => {
     try {
