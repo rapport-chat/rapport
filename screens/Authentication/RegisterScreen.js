@@ -82,11 +82,31 @@ export default class LoginScreen extends Component {
 
   componentWillUnmount() { }
 
-  onRegisterPress() {
+  async onRegisterPress() {
     if (!this._validateForm()) {
       return;
     }
     var qs = require('qs');
+
+    var invCode;
+    await fetch(this.state.serverUrl + '/parse/classes/AuthenticationKey/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Parse-Application-Id': 'rapportApp'
+      },
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        invCode = responseJson.results[0].code;
+        console.log("invCode: " + invCode);
+      })
+
+
+    console.log(invCode);
+    if (this.state.invitationCode !== invCode) {
+      alert("InvitationCode invalid!");
+      return;
+    }
 
     var user = {
       firstName: this.state.firstName,
@@ -110,14 +130,15 @@ export default class LoginScreen extends Component {
           this._saveUserId(responseJson.objectId);
           this.props.navigation.navigate("App");
         }
-      })
+      }).catch(
+        alert("Can't connect to Server! Please check your Configuration!")
+      )
   }
 
   _saveServerUrl = async serverUrl => {
     try {
       await AsyncStorage.setItem("serverUrl", serverUrl);
     } catch (error) {
-      // Error retrieving data
       console.log(error.message);
     }
   };
@@ -133,7 +154,7 @@ export default class LoginScreen extends Component {
 
   _validateForm() {
 
-   if(this.state == null){
+    if (this.state == null) {
       return false;
     }
     if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
