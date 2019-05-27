@@ -1,21 +1,20 @@
-import React from "react";
-import { Platform } from "react-native";
 import {
   createStackNavigator,
   createSwitchNavigator,
-  createDrawerNavigator
 } from "react-navigation";
 
 import ChatsScreen from "app/screens/ChatsScreen";
 import DirectChatScreen from "app/screens/DirectChatScreen";
 import SettingsScreen from "app/screens/SettingsScreen";
-import LoginScreen from "../screens/Authentication/LoginScreen";
-import RegisterScreen from "../screens/Authentication/RegisterScreen";
-import AuthLoadingScreen from "../screens/Authentication/AuthLoadingScreen";
+import NewGroupScreen from "app/screens/NewGroupScreen";
+import LoginScreen from "app/screens/Authentication/LoginScreen";
+import RegisterScreen from "app/screens/Authentication/RegisterScreen";
+import AuthLoadingScreen from "app/screens/Authentication/AuthLoadingScreen";
 
 const AppStack = createStackNavigator({
   Home: ChatsScreen,
   DirectChat: DirectChatScreen,
+  NewGroup: NewGroupScreen,
   Settings: SettingsScreen
 });
 const AuthStack = createStackNavigator({
