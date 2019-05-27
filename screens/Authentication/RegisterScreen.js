@@ -89,7 +89,12 @@ export default class LoginScreen extends Component {
     var qs = require('qs');
 
     var invCode;
-    await fetch(this.state.serverUrl + '/parse/classes/AuthenticationKey/', {
+    var url = this.state.serverUrl;
+
+    if(!url.startsWith("http")){
+      url = "http://" + url;
+    }
+    await fetch(url + '/parse/classes/AuthenticationKey/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

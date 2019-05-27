@@ -86,6 +86,9 @@ export default class LoginScreen extends Component {
 
   //Sends login request to server
   _sendLoginRequest(requestUrl) {
+    if(!requestUrl.startsWith("http")){
+      requestUrl = "http://" + requestUrl;
+    }
     fetch(requestUrl, {
       method: "GET",
       headers: {
