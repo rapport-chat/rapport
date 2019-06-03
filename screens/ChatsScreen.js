@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import ChatListItem from "app/components/ChatListItem";
 import { SafeAreaView } from "react-navigation";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "app/constants/Colors";
@@ -72,22 +73,11 @@ export default class DirectChatsScreen extends React.Component {
               }
             ]}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("DirectChat")}
-                // onPress={() => this.props.navigation.navigation}
-                style={styles.itemContainer}
-              >
-                <Text style={styles.item}>{item}</Text>
-                <Text style={styles.subItem}>
-                  +382 9232322: Hey, how are you? 👋
-                </Text>
-                <Ionicons
-                  style={styles.arrow}
-                  size={30}
-                  name="ios-arrow-forward"
-                  color={Colors.subtleIcon}
-                />
-              </TouchableOpacity>
+              <ChatListItem
+                onClickFunction={this.openObject.bind(this)}
+                item={item}
+                subItem="+382 9232322: Hey, how are you? 👋"
+              />
             )}
             renderSectionHeader={({ section }) => (
               <Text style={styles.sectionHeader}>{section.title}</Text>
@@ -97,6 +87,10 @@ export default class DirectChatsScreen extends React.Component {
         </View>
       </SafeAreaView>
     );
+  }
+
+  openObject(){
+    this.props.navigation.navigate("DirectChat");
   }
 }
 
@@ -114,30 +108,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     backgroundColor: "#dedede"
-  },
-  itemContainer: {
-    borderBottomColor: Colors.subtleIcon,
-    borderBottomWidth: 0.5
-  },
-  item: {
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    fontSize: 16,
-    fontWeight: "bold",
-    height: itemHeight
-  },
-  subItem: {
-    fontSize: 14,
-    paddingBottom: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    color: Colors.subFont
-  },
-  arrow: {
-    position: "absolute",
-    right: 10,
-    top: itemHeight / 2 - 2,
-    justifyContent: "center"
   }
 });
