@@ -17,6 +17,7 @@ export default class GroupMemberSelectItem extends Component {
       <TouchableOpacity
         onPress={() => {
           this.toggleIcon();
+          this.props.toggleSelect(this.props.objectId);
         }}
         style={styles.itemContainer}
       >

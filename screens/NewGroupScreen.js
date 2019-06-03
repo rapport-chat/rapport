@@ -5,39 +5,55 @@ import {
   Button,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  AsyncStorage,
   View
 } from "react-native";
 import { SafeAreaView } from "react-navigation";
 import Colors from "app/constants/Colors";
 import GroupMemberSelectItem from "app/components/GroupMemberSelectItem";
 
-export default class DirectChatsScreen extends React.Component {
-  static navigationOptions = {
-    headerStyle: {
-      backgroundColor: Colors.primary
-    },
-    headerTintColor: "#fff",
-    title: "New Group",
-    headerRight: (
-      <Button
-        onPress={() => alert("Created Groups")}
-        title="Create"
-        color="#fff"
-      />
-    )
+export default class NewGroupScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return {
+      headerStyle: {
+        backgroundColor: Colors.primary
+      },
+      headerTintColor: "#fff",
+      title: "New Group",
+      headerRight: (
+        <Button
+          onPress={() => params.createGroup()}
+          title="Create"
+          color="#fff"
+        />
+      )
+    };
   };
+
+  componentDidMount() {
+    this.props.navigation.setParams({ createGroup: this.createGroup });
+  }
 
   constructor(props) {
     super(props);
-    state = {
-      users: []
+    this.state = {
+      users: [],
+      selectedUserIds: []
     };
-    this.getDirectChats();
+    this.getServerUrl();
   }
 
+  getServerUrl = async () => {
+    let url = await AsyncStorage.getItem("serverUrl");
+    this.setState({
+      serverUrl: url
+    });
+    this.getDirectChats();
+  };
+
   async getDirectChats() {
-    await fetch("http://192.168.8.161:1337/parse/users/", {
+    await fetch(this.state.serverUrl + "/parse/users/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -74,8 +90,9 @@ export default class DirectChatsScreen extends React.Component {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <GroupMemberSelectItem
+                toggleSelect={this.toggleSelect.bind(this)}
                 name={item.firstName + " " + item.lastName}
-                id={item.objectId}
+                objectId={item.objectId}
                 icon="checkbox-blank-circle-outline"
               />
             )}
@@ -86,7 +103,54 @@ export default class DirectChatsScreen extends React.Component {
   }
 
   toggleSelect(id) {
-    console.log(this.refs.icon + id);
+    let array = [...this.state.selectedUserIds]; // make a separate copy of the array
+    let index = array.indexOf(id);
+    if (index !== -1) {
+      array.splice(index, 1);
+      this.setState({ selectedUserIds: array });
+    } else {
+      this.setState({ selectedUserIds: [...this.state.selectedUserIds, id] });
+    }
+  }
+
+  createGroup = () => {
+    if (this.state.groupName === "" || this.state.groupName === undefined) {
+      alert("Please enter a Group Name!");
+      return;
+    }
+    this.state.selectedUserIds.forEach(selectedUserId => {});
+    fetch(this.state.serverUrl + "/parse/classes/Group", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Parse-Application-Id": "rapportApp"
+      },
+      body: JSON.stringify({
+        name: this.state.groupName
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson);
+        this.state.selectedUserIds.forEach(selectedUserId => {
+          this.storeGroupMemberRelation(responseJson.objectId, selectedUserId);
+        });
+      });
+    this.props.navigation.navigate("Home");
+  };
+
+  storeGroupMemberRelation(groupId, userId) {
+    fetch(this.state.serverUrl + "/parse/classes/GroupMember", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Parse-Application-Id": "rapportApp"
+      },
+      body: JSON.stringify({
+        groupId: groupId,
+        userId: userId
+      })
+    });
   }
 }
 
