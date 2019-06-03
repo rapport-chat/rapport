@@ -1,7 +1,7 @@
 import React from "react";
 import {
   SectionList,
-  Icon,
+  Button,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,12 +13,32 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "app/constants/Colors";
 
 export default class DirectChatsScreen extends React.Component {
-  static navigationOptions = {
-    headerStyle: {
-      backgroundColor: Colors.primary
-    },
-    headerTintColor: "#fff",
-    title: "Chats"
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerStyle: {
+        backgroundColor: Colors.primary
+      },
+      headerTintColor: "#fff",
+      title: "Chats",
+      headerRight: (
+        <Ionicons
+          onPress={() => navigation.navigate("NewGroup")}
+          name="ios-add-circle"
+          size={30}
+          color="#4F8EF7"
+          style={{ color: "#fff", marginRight: 15 }}
+        />
+      ),
+      headerLeft: (
+        <Ionicons
+          onPress={() => alert("This is a button!")}
+          name="ios-person"
+          size={30}
+          color="#4F8EF7"
+          style={{ color: "#fff", marginLeft: 15 }}
+        />
+      )
+    };
   };
   render() {
     var directChats = [

@@ -35,13 +35,6 @@ export default class App extends React.Component {
     headerStyle: {
       backgroundColor: Colors.primary
     },
-    // headerLeft: (
-    //   <Button
-    //     onPress={() => alert('This is a button!')}
-    //     title="Info"
-    //     color="#fff"
-    //   />
-    // ),
     headerTintColor: "#fff",
     title: "Direct Chat"
   };
