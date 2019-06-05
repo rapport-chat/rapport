@@ -6,6 +6,7 @@ import {
 import ChatsScreen from "app/screens/ChatsScreen";
 import DirectChatScreen from "app/screens/DirectChatScreen";
 import SettingsScreen from "app/screens/SettingsScreen";
+import NerdSettingsScreen from "app/screens/NerdSettingsScreen";
 import NewGroupScreen from "app/screens/NewGroupScreen";
 import LoginScreen from "app/screens/Authentication/LoginScreen";
 import RegisterScreen from "app/screens/Authentication/RegisterScreen";
@@ -15,7 +16,8 @@ const AppStack = createStackNavigator({
   Home: ChatsScreen,
   DirectChat: DirectChatScreen,
   NewGroup: NewGroupScreen,
-  Settings: SettingsScreen
+  Settings: SettingsScreen,
+  Nerd: NerdSettingsScreen,
 });
 const AuthStack = createStackNavigator({
   Login: LoginScreen,

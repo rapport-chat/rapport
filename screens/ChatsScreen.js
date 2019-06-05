@@ -31,7 +31,7 @@ export default class DirectChatsScreen extends React.Component {
       ),
       headerLeft: (
         <Ionicons
-          onPress={() => alert("This is a button!")}
+          onPress={() => navigation.navigate("Settings")}
           name="ios-person"
           size={30}
           color="#4F8EF7"
@@ -48,12 +48,6 @@ export default class DirectChatsScreen extends React.Component {
       "User",
       "User",
       "User",
-      "User",
-      "User",
-      "User",
-      "User",
-      "User",
-      "User"
     ];
     var groupChats = ["Development", "Accounting", "DevOps"];
 
