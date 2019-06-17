@@ -37,13 +37,13 @@ export default class SettingsScreen extends React.Component {
                   onPress={() => this.props.navigation.navigate("Nerd")}
                   title="Nerd Settings"
                 />
-
-
+                
                 <Button
                   buttonStyle={styles.loginButton}
                   onPress={() => this.onLogoutPress()}
                   title="Logout"
                 />
+
               </View>
               <SeparatorLine />
             </View>
@@ -53,6 +53,7 @@ export default class SettingsScreen extends React.Component {
     );
   }
   onLogoutPress(){
-    alert("log out amk");
+    AsyncStorage.removeItem('userId');
+    this.props.navigation.navigate("Login");
   }
 }
