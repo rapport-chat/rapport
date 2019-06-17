@@ -8,9 +8,9 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView
 } from "react-native";
-import Colors from "app/constants/Colors";
-import styles from "./AuthStyle";
-import SeparatorLine from "app/components/SeparatorLine";
+import Colors from "app/constants/Colors"; //Import  our colors
+import styles from "./AuthStyle"; //Import the AuthStyles
+import SeparatorLine from "app/components/SeparatorLine"; //Import the SeperatorLine Component
 import { Button } from "react-native-elements";
 
 export default class LoginScreen extends Component {
@@ -23,6 +23,7 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+        {/*Dismisses keyboard when touching empty space*/}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.loginScreenContainer}>
             <View style={styles.loginFormView}>
@@ -31,29 +32,34 @@ export default class LoginScreen extends Component {
                 <TextInput
                   placeholder="https://server-url.com:1337"
                   placeholderColor="#c4c3cb"
+                  // Save url in state when text is changed
                   onChangeText={serverUrl => this.setState({ serverUrl })}
                   style={styles.loginFormTextInput}
                 />
                 <TextInput
                   placeholder="Username"
                   placeholderColor="#c4c3cb"
+                  // Save username in state when text is changed
                   onChangeText={username => this.setState({ username })}
                   style={styles.loginFormTextInput}
                 />
                 <TextInput
                   placeholder="Password"
                   placeholderColor="#c4c3cb"
+                  // Save password in state when text is changed
                   onChangeText={password => this.setState({ password })}
                   style={styles.loginFormTextInput}
                   secureTextEntry={true}
                 />
                 <Button
                   buttonStyle={styles.loginButton}
+                  // Call login function on press
                   onPress={() => this.onLoginPress()}
                   title="Login"
                 />
               </View>
               <SeparatorLine />
+              {/*Redirect to register when pressed*/}
               <Text onPress={this._showRegister} style={styles.registerText}>
                 Don't have an account yet? Register now!
               </Text>
@@ -64,21 +70,20 @@ export default class LoginScreen extends Component {
     );
   }
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
+  //Login function
   onLoginPress() {
     if (!this._validateForm()) {
       return; //Don't continue with login, form is not validated
     }
 
-    let qs = require("qs");
+    let qs = require("qs"); //Require qs node package
+    //Create user object
     let user = {
       username: this.state.username,
       password: this.state.password
     };
 
+    //Call sendLoginRequest function
     this._sendLoginRequest(
       this.state.serverUrl + "/parse/login?" + qs.stringify(user)
     );
@@ -86,7 +91,7 @@ export default class LoginScreen extends Component {
 
   //Sends login request to server
   _sendLoginRequest(requestUrl) {
-    if(!requestUrl.startsWith("http")){
+    if (!requestUrl.startsWith("http") && !requestUrl.startsWith("https")) {
       requestUrl = "http://" + requestUrl;
     }
     fetch(requestUrl, {
@@ -98,6 +103,7 @@ export default class LoginScreen extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
+        //When request is successful call handleLogin function
         this._handleLoginResponse(responseJson);
       })
       .catch(
@@ -116,28 +122,31 @@ export default class LoginScreen extends Component {
     }
   }
 
-  _saveToLocalStorage = async(key, value) => {
+  _saveToLocalStorage = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, value); //Save userId to local storage
     } catch (error) {
       // Error storing data
-      console.error(error.message); 
+      console.error(error.message);
     }
   };
 
   //Validation for login form. Notifies user if anything is missing.
   _validateForm() {
-    if (this.state == null) {
+    if (this.state == null) { //If state is empty
       return false;
     }
+    //If serverUrl is empty
     if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
       alert("Please enter a server url!");
       return false;
     }
+    //If username is empty
     if (this.state.username === "" || this.state.username === undefined) {
       alert("Please enter a username!");
       return false;
     }
+    //If password is empty
     if (this.state.password === "" || this.state.password === undefined) {
       alert("Please enter a password!");
       return false;

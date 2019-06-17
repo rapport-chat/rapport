@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import Colors from "app/constants/Colors";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons"; //Import MaterialCommunityIcons
 
 export default class GroupMemberSelectItem extends Component {
   constructor(props){
@@ -16,8 +16,8 @@ export default class GroupMemberSelectItem extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.toggleIcon();
-          this.props.toggleSelect(this.props.objectId);
+          this.toggleIcon(); //Change icon of this item
+          this.props.toggleSelect(this.props.objectId); //call function that is passed
         }}
         style={styles.itemContainer}
       >
@@ -32,6 +32,7 @@ export default class GroupMemberSelectItem extends Component {
     );
   }
 
+  //Checks which icon is currently being displayed and changes it
   toggleIcon(){
     if(this.state.icon === 'checkbox-marked-circle-outline'){
       this.setState({icon: 'checkbox-blank-circle-outline', iconColor: Colors.subtleIcon});

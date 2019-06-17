@@ -11,6 +11,7 @@ export default class ChatListItem extends Component {
   render() {
     return (
       <TouchableOpacity
+        //Calls function that is passed to this component
         onPress={() => this.props.onClickFunction()}
         style={styles.itemContainer}
       >
