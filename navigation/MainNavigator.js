@@ -5,8 +5,9 @@ import {
 
 import ChatsScreen from "app/screens/ChatsScreen";
 import DirectChatScreen from "app/screens/DirectChatScreen";
-import SettingsScreen from "app/screens/SettingsScreen";
-import NerdSettingsScreen from "app/screens/NerdSettingsScreen";
+import SettingsScreen from "app/screens/Settings/SettingsScreen";
+import NerdSettingsScreen from "app/screens/Settings/NerdSettingsScreen";
+import LicenseScreen from "app/screens/Settings/LicenseScreen";
 import NewGroupScreen from "app/screens/NewGroupScreen";
 import LoginScreen from "app/screens/Authentication/LoginScreen";
 import RegisterScreen from "app/screens/Authentication/RegisterScreen";
@@ -18,6 +19,7 @@ const AppStack = createStackNavigator({
   NewGroup: NewGroupScreen,
   Settings: SettingsScreen,
   Nerd: NerdSettingsScreen,
+  License: LicenseScreen,
 });
 const AuthStack = createStackNavigator({
   Login: LoginScreen,

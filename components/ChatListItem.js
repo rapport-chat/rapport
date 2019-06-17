@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 30,
+    fontSize: 16,
     fontWeight: "bold",
     height: itemHeight
   },

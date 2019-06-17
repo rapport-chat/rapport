@@ -35,6 +35,11 @@ export default class SettingsScreen extends React.Component {
                 />
                 <Button
                   buttonStyle={styles.loginButton}
+                  onPress={() => this.props.navigation.navigate("License")} //Redirect to License Screen
+                  title="Licenses"
+                />
+                <Button
+                  buttonStyle={styles.loginButton}
                   onPress={() => this.onLogoutPress()} //Call the logout press function
                   title="Logout"
                 />

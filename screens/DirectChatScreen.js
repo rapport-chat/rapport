@@ -1,13 +1,7 @@
-import { AppLoading, Asset, Linking } from "expo";
-import React, { Component } from "react";
-import { StyleSheet, View, Dimensions, Platform } from "react-native";
-import { SafeAreaView } from "react-navigation";
-import { Bubble, GiftedChat, SystemMessage } from "react-native-gifted-chat";
+import React from "react";
+import { View, Dimensions, Platform } from "react-native";
+import { GiftedChat } from "react-native-gifted-chat";
 import Colors from "app/constants/Colors";
-
-import AccessoryBar from "./giftedChat/AccessoryBar";
-import CustomActions from "./giftedChat/CustomActions";
-import CustomView from "./giftedChat/CustomView";
 
 export default class DirectChat extends React.Component {
   static navigationOptions = {
@@ -157,7 +151,7 @@ export default class DirectChat extends React.Component {
       <View style={{ flex: 1, marginBottom: this.isIphoneX() ? 20 : 0 }}>
         <GiftedChat
           messages={this.state.messages}
-          textInputProps={{autoFocus: true}}
+          textInputProps={{ autoFocus: true }}
           onSend={messages => this.onSend(messages)}
           user={this.state.user}
           keyboardShouldPersistTaps="never"
