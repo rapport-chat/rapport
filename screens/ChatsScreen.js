@@ -5,9 +5,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  AsyncStorage,
   View
 } from "react-native";
+import ChatListItem from "app/components/ChatListItem";
 import { SafeAreaView } from "react-navigation";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "app/constants/Colors";
@@ -40,17 +41,82 @@ export default class DirectChatsScreen extends React.Component {
       )
     };
   };
-  render() {
-    var directChats = [
-      "Developer",
-      "Manager",
-      "User",
-      "User",
-      "User",
-      "User",
-    ];
-    var groupChats = ["Development", "Accounting", "DevOps"];
 
+  constructor(props) {
+    super(props);
+    this.users = [];
+    this.groups = [];
+    this.state = {
+      users: [],
+      groups: [],
+    };
+    this.props.navigation.addListener("willFocus", payload => {
+      this.users = [];
+      this.groups = [];
+      this.getData();
+    });
+  }
+
+  getData() {
+    this.state = {
+      users: [],
+      groups: [],
+    };
+    this.getServerUrl();
+  }
+
+  getServerUrl = async () => {
+    let url = await AsyncStorage.getItem("serverUrl");
+    this.setState({
+      serverUrl: url
+    });
+    this.getDirectChats();
+    this.getGroupChats();
+  };
+
+  async getDirectChats() {
+    await fetch(this.state.serverUrl + "/parse/users/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Parse-Application-Id": "rapportApp"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        for (let userObject of responseJson.results) {
+          let user = {
+            objectId: userObject.objectId,
+            displayName: userObject.firstName + " " + userObject.lastName
+          };
+          this.users = [...this.users, user];
+          this.setState({ users: [...this.state.users, user] });
+        }
+      });
+  }
+
+  async getGroupChats() {
+    await fetch(this.state.serverUrl + "/parse/classes/Group/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Parse-Application-Id": "rapportApp"
+      }
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        for (let groupObject of responseJson.results) {
+          let group = {
+            objectId: groupObject.objectId,
+            displayName: groupObject.name
+          };
+          this.groups = [...this.groups, group];
+          this.setState({ groups: [...this.state.groups, group] });
+        }
+      });
+  }
+
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
@@ -58,30 +124,20 @@ export default class DirectChatsScreen extends React.Component {
             sections={[
               {
                 title: "Group Chats",
-                data: groupChats
+                data: this.groups
               },
               {
                 title: "Direct Chats",
-                data: directChats
+                data: this.users
               }
             ]}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("DirectChat")}
-                // onPress={() => this.props.navigation.navigation}
-                style={styles.itemContainer}
-              >
-                <Text style={styles.item}>{item}</Text>
-                <Text style={styles.subItem}>
-                  +382 9232322: Hey, how are you? 👋
-                </Text>
-                <Ionicons
-                  style={styles.arrow}
-                  size={30}
-                  name="ios-arrow-forward"
-                  color={Colors.subtleIcon}
-                />
-              </TouchableOpacity>
+              <ChatListItem
+                objectId={item.objectId}
+                onClickFunction={this.openObject.bind(this)}
+                item={item.displayName}
+                subItem="+382 9232322: Hey, how are you? 👋"
+              />
             )}
             renderSectionHeader={({ section }) => (
               <Text style={styles.sectionHeader}>{section.title}</Text>
@@ -91,6 +147,11 @@ export default class DirectChatsScreen extends React.Component {
         </View>
       </SafeAreaView>
     );
+    
+  }
+
+  openObject() {
+    this.props.navigation.navigate("DirectChat");
   }
 }
 
@@ -108,30 +169,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     backgroundColor: "#dedede"
-  },
-  itemContainer: {
-    borderBottomColor: Colors.subtleIcon,
-    borderBottomWidth: 0.5
-  },
-  item: {
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    fontSize: 16,
-    fontWeight: "bold",
-    height: itemHeight
-  },
-  subItem: {
-    fontSize: 14,
-    paddingBottom: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    color: Colors.subFont
-  },
-  arrow: {
-    position: "absolute",
-    right: 10,
-    top: itemHeight / 2 - 2,
-    justifyContent: "center"
   }
 });
