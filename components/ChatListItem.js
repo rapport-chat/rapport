@@ -12,7 +12,7 @@ export default class ChatListItem extends Component {
     return (
       <TouchableOpacity
         //Calls function that is passed to this component
-        onPress={() => this.props.onClickFunction()}
+        onPress={() => this.props.onClickFunction(this.props.objectId)}
         style={styles.itemContainer}
       >
         <Text style={styles.item}>{this.props.item}</Text>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 16,
+    fontSize: 30,
     fontWeight: "bold",
     height: itemHeight
   },

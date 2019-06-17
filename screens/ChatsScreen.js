@@ -5,7 +5,7 @@ import {
   Text,
   AsyncStorage,
   View
-} from "react-native"; 
+} from "react-native";
 import ChatListItem from "app/components/ChatListItem"; //Import ChatListItem Component
 import { SafeAreaView } from "react-navigation"; //Import SafeAreaView from ReactNavigation package
 import { Ionicons } from "@expo/vector-icons"; //Import Ionicons from vector-icons package
@@ -50,7 +50,7 @@ export default class DirectChatsScreen extends React.Component {
     };
     //Retrieve users and groups whenever the ChatScreen is opened
     //For example after creating a group, the list should be reloaded
-    this.props.navigation.addListener("willFocus", payload => { 
+    this.props.navigation.addListener("willFocus", payload => {
       this.users = [];
       this.groups = [];
       this.getData();
@@ -58,7 +58,7 @@ export default class DirectChatsScreen extends React.Component {
   }
 
   //Retrieve all data for this screen
-  getData(){
+  getData() {
     //Make sure our state is empty
     this.state = {
       users: [],
@@ -70,9 +70,11 @@ export default class DirectChatsScreen extends React.Component {
   //Retrieve server url from local storage
   getServerUrl = async () => {
     let url = await AsyncStorage.getItem("serverUrl");
+    let userId = await AsyncStorage.getItem("userId");
     //Save url in the state
     this.setState({
-      serverUrl: url
+      serverUrl: url,
+      userId: userId
     });
     this.getDirectChats();
     this.getGroupChats();
@@ -91,18 +93,20 @@ export default class DirectChatsScreen extends React.Component {
       .then(responseJson => {
         for (let userObject of responseJson.results) {
           //Create user object with all the important data
-          let user = {
-            objectId: userObject.objectId,
-            displayName: userObject.firstName + " " + userObject.lastName
-          };
-          //Store the created user object
-          this.users = [...this.users, user]; 
-          this.setState({ users: [...this.state.users, user] });
+          if (userObject.objectId !== this.state.userId) {
+            let user = {
+              objectId: userObject.objectId,
+              displayName: userObject.firstName + " " + userObject.lastName
+            };
+            //Store the created user object
+            this.users = [...this.users, user];
+            this.setState({ users: [...this.state.users, user] });
+          }
         }
       });
   }
 
-  //Get all groups to list them 
+  //Get all groups to list them
   async getGroupChats() {
     await fetch(this.state.serverUrl + "/parse/classes/Group/", {
       method: "GET",
@@ -163,8 +167,11 @@ export default class DirectChatsScreen extends React.Component {
   }
 
   //Opens either the chat or group that is clicked
-  openObject() {
-    this.props.navigation.navigate("DirectChat");
+  openObject(objectId) {
+    this.props.navigation.navigate("DirectChat", {
+      secondUserId: objectId,
+      serverUrl: this.state.serverUrl
+    });
   }
 }
 
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     paddingTop: 5,
-    paddingLeft: 10,  
+    paddingLeft: 10,
     paddingRight: 10,
     paddingBottom: 5,
     fontSize: 20,

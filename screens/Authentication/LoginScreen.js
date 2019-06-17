@@ -107,7 +107,6 @@ export default class LoginScreen extends Component {
         this._handleLoginResponse(responseJson);
       })
       .catch(
-        alert("Can't connect to Server! Please check your Configuration!")
       );
   }
 
@@ -116,7 +115,7 @@ export default class LoginScreen extends Component {
     if (responseJson.objectId != null) {
       this._saveToLocalStorage("serverUrl", this.state.serverUrl); //Save server url to local storage for future use
       this._saveToLocalStorage("userId", responseJson.objectId); //Save User object id to local storage for future use
-      this.props.navigation.navigate("App"); //User is now logged in, redirect to app stack
+      this.props.navigation.navigate("App", {userId: responseJson.objectId}); //User is now logged in, redirect to app stack
     } else {
       console.error(responseJson); //Got empty response, log error
     }

@@ -48,8 +48,11 @@ export default class NewGroupScreen extends React.Component {
 
   getServerUrl = async () => {
     let url = await AsyncStorage.getItem("serverUrl");
+    let userId = await AsyncStorage.getItem("userId");
     this.setState({
-      serverUrl: url //save url in state
+      serverUrl: url, //save url in state
+      userId: userId,
+      selectedUserIds: [...this.state.selectedUserIds, userId] 
     });
     this.getDirectChats(); //Call function to get direct chats
   };
@@ -66,15 +69,17 @@ export default class NewGroupScreen extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         for (let userObject of responseJson.results) {
-          //Create user object
-          let user = {
-            username: userObject.username,
-            objectId: userObject.objectId,
-            firstName: userObject.firstName,
-            lastName: userObject.lastName
-          };
-          //Save user object in state
-          this.setState({ users: [...this.state.users, user] });
+          if (userObject.objectId !== this.state.userId) {
+            //Create user object
+            let user = {
+              username: userObject.username,
+              objectId: userObject.objectId,
+              firstName: userObject.firstName,
+              lastName: userObject.lastName
+            };
+            //Save user object in state
+            this.setState({ users: [...this.state.users, user] });
+          }
         }
       });
   }

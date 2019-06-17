@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   Keyboard,
   Text,
-  StyleSheet,
+  AsyncStorage,
   View,
   TextInput,
   TouchableWithoutFeedback,
@@ -136,10 +136,9 @@ export default class LoginScreen extends Component {
         if (responseJson.objectId != null) { //Check if there is a response
           this._saveServerUrl(this.state.serverUrl); //Pass serverUrl to saveServerUrl function
           this._saveUserId(responseJson.objectId); //Pass objectId to saveUserId function
-          this.props.navigation.navigate("App"); //Redirect App Screens
+          this.props.navigation.navigate("App", {userId: responseJson.objectId}); //User is now logged in, redirect to app stack
         }
       }).catch(
-        alert("Can't connect to Server! Please check your Configuration!")
       )
   }
 
