@@ -23,6 +23,7 @@ export default class NewGroupScreen extends React.Component {
       title: "New Group",
       headerRight: (
         <Button
+          //Call create group function of NewGroupScreen
           onPress={() => params.createGroup()}
           title="Create"
           color="#fff"
@@ -32,26 +33,28 @@ export default class NewGroupScreen extends React.Component {
   };
 
   componentDidMount() {
+    //Pass createGroup function to the navigation
     this.props.navigation.setParams({ createGroup: this.createGroup });
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
-      selectedUserIds: []
+      users: [], //Create empty users array
+      selectedUserIds: [] //Create empty selectUserIs array
     };
-    this.getServerUrl();
+    this.getServerUrl(); //Call function to get serverUrl
   }
 
   getServerUrl = async () => {
     let url = await AsyncStorage.getItem("serverUrl");
     this.setState({
-      serverUrl: url
+      serverUrl: url //save url in state
     });
-    this.getDirectChats();
+    this.getDirectChats(); //Call function to get direct chats
   };
 
+  //Retrieve direct chats
   async getDirectChats() {
     await fetch(this.state.serverUrl + "/parse/users/", {
       method: "GET",
@@ -63,12 +66,14 @@ export default class NewGroupScreen extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         for (let userObject of responseJson.results) {
+          //Create user object
           let user = {
             username: userObject.username,
             objectId: userObject.objectId,
             firstName: userObject.firstName,
             lastName: userObject.lastName
           };
+          //Save user object in state
           this.setState({ users: [...this.state.users, user] });
         }
       });
@@ -88,7 +93,9 @@ export default class NewGroupScreen extends React.Component {
           <FlatList
             data={this.state.users}
             keyExtractor={(item, index) => index.toString()}
+            //Render the individual items for the list
             renderItem={({ item }) => (
+              //Use the GroupMemberSelectItem component to display users
               <GroupMemberSelectItem
                 toggleSelect={this.toggleSelect.bind(this)}
                 name={item.firstName + " " + item.lastName}
@@ -102,23 +109,26 @@ export default class NewGroupScreen extends React.Component {
     );
   }
 
+  //Add or remove a user from the selected Users array
   toggleSelect(id) {
     let array = [...this.state.selectedUserIds]; // make a separate copy of the array
-    let index = array.indexOf(id);
+    let index = array.indexOf(id); //Check if user id is already in array
     if (index !== -1) {
-      array.splice(index, 1);
-      this.setState({ selectedUserIds: array });
+      //If id is already in array
+      array.splice(index, 1); //remove id from array
+      this.setState({ selectedUserIds: array }); //Save new array
     } else {
-      this.setState({ selectedUserIds: [...this.state.selectedUserIds, id] });
+      //If id isn't in array
+      this.setState({ selectedUserIds: [...this.state.selectedUserIds, id] }); //add id to array
     }
   }
 
   createGroup = () => {
+    //group name can't be empty
     if (this.state.groupName === "" || this.state.groupName === undefined) {
       alert("Please enter a Group Name!");
       return;
     }
-    this.state.selectedUserIds.forEach(selectedUserId => {});
     fetch(this.state.serverUrl + "/parse/classes/Group", {
       method: "POST",
       headers: {
@@ -131,14 +141,18 @@ export default class NewGroupScreen extends React.Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        //Loop over all selected users
         this.state.selectedUserIds.forEach(selectedUserId => {
+          //call function to store member relation
           this.storeGroupMemberRelation(responseJson.objectId, selectedUserId);
         });
       });
+
+    //Redirect back to ChatsScreen
     this.props.navigation.navigate("Home");
   };
 
+  //Send request to store relation between group and members
   storeGroupMemberRelation(groupId, userId) {
     fetch(this.state.serverUrl + "/parse/classes/GroupMember", {
       method: "POST",

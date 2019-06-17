@@ -21,6 +21,7 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+      {/*Dismisses keyboard when touching empty space*/}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.loginScreenContainer}>
             <View style={styles.loginFormView}>
@@ -29,12 +30,14 @@ export default class LoginScreen extends Component {
                 <TextInput
                   placeholder="https://server-url.com:1337"
                   placeholderColor="#c4c3cb"
+                  // Save url in state when text is changed
                   onChangeText={serverUrl => this.setState({ serverUrl })}
                   style={styles.loginFormTextInput}
                 />
                 <TextInput
                   placeholder="Invitation Code"
                   placeholderColor="#c4c3cb"
+                  // Save invitiationCode in state when text is changed
                   onChangeText={invitationCode =>
                     this.setState({ invitationCode })
                   }
@@ -43,30 +46,35 @@ export default class LoginScreen extends Component {
                 <TextInput
                   placeholder="First Name"
                   placeholderColor="#c4c3cb"
+                  // Save first name in state when text is changed
                   onChangeText={firstName => this.setState({ firstName })}
                   style={styles.loginFormTextInput}
                 />
                 <TextInput
                   placeholder="Last Name"
                   placeholderColor="#c4c3cb"
+                  // Save last name in state when text is changed
                   onChangeText={lastName => this.setState({ lastName })}
                   style={styles.loginFormTextInput}
                 />
                 <TextInput
                   placeholder="Username"
                   placeholderColor="#c4c3cb"
+                  // Save username in state when text is changed
                   onChangeText={username => this.setState({ username })}
                   style={styles.loginFormTextInput}
                 />
                 <TextInput
                   placeholder="Password"
                   placeholderColor="#c4c3cb"
+                  // Save password in state when text is changed
                   onChangeText={password => this.setState({ password })}
                   style={styles.loginFormTextInput}
                   secureTextEntry={true}
                 />
                 <Button
                   buttonStyle={styles.loginButton}
+                  // Call register function on press
                   onPress={() => this.onRegisterPress()}
                   title="Register"
                 />
@@ -78,18 +86,15 @@ export default class LoginScreen extends Component {
     );
   }
 
-  componentDidMount() { }
-
-  componentWillUnmount() { }
-
+  //Register function
   async onRegisterPress() {
     if (!this._validateForm()) {
-      return;
+      return; //Don't continue with login, form is not validated
     }
-    var qs = require('qs');
+    let qs = require('qs'); //Require qs node package
 
-    var invCode;
-    var url = this.state.serverUrl;
+    let invCode;
+    let url = this.state.serverUrl;
 
     if(!url.startsWith("http")){
       url = "http://" + url;
@@ -102,17 +107,15 @@ export default class LoginScreen extends Component {
       },
     }).then((response) => response.json())
       .then((responseJson) => {
-        invCode = responseJson.results[0].code;
-        console.log("invCode: " + invCode);
+        invCode = responseJson.results[0].code; //Store invCode
       })
 
-
-    console.log(invCode);
     if (this.state.invitationCode !== invCode) {
-      alert("InvitationCode invalid!");
+      alert("InvitationCode invalid!"); //Can't register with invalid code
       return;
     }
 
+    //Create new user object
     var user = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -130,16 +133,17 @@ export default class LoginScreen extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-        if (responseJson.objectId != null) {
-          this._saveServerUrl(this.state.serverUrl);
-          this._saveUserId(responseJson.objectId);
-          this.props.navigation.navigate("App");
+        if (responseJson.objectId != null) { //Check if there is a response
+          this._saveServerUrl(this.state.serverUrl); //Pass serverUrl to saveServerUrl function
+          this._saveUserId(responseJson.objectId); //Pass objectId to saveUserId function
+          this.props.navigation.navigate("App"); //Redirect App Screens
         }
       }).catch(
         alert("Can't connect to Server! Please check your Configuration!")
       )
   }
 
+  //Store serverUrl in local storage
   _saveServerUrl = async serverUrl => {
     try {
       await AsyncStorage.setItem("serverUrl", serverUrl);
@@ -148,6 +152,7 @@ export default class LoginScreen extends Component {
     }
   };
 
+  //Store userId in local storage
   _saveUserId = async userId => {
     try {
       await AsyncStorage.setItem("userId", userId);
@@ -157,27 +162,32 @@ export default class LoginScreen extends Component {
     }
   };
 
+  //Validate input from form
   _validateForm() {
-
-    if (this.state == null) {
+    if (this.state == null) { //If state is empty
       return false;
     }
+    //If serverUrl is empty
     if (this.state.serverUrl === "" || this.state.serverUrl === undefined) {
       alert("Please enter a server url!");
       return false;
     }
+    //If first name is empty
     if (this.state.firstName === "" || this.state.firstName === undefined) {
       alert("Please enter your first name!");
       return false;
     }
+    //If last name is empty
     if (this.state.lastName === "" || this.state.lastName === undefined) {
       alert("Please enter your last name!");
       return false;
     }
+    //If username is empty
     if (this.state.username === "" || this.state.username === undefined) {
       alert("Please enter your username!");
       return false;
     }
+    //If password is empty
     if (this.state.password === "" || this.state.password === undefined) {
       alert("Please enter your password!");
       return false;

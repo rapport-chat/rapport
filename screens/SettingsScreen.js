@@ -1,19 +1,15 @@
-import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import React from "react";
 import Colors from "app/constants/Colors";
 import {
   Keyboard,
   Text,
   AsyncStorage,
   View,
-  TextInput,
   TouchableWithoutFeedback,
   KeyboardAvoidingView
 } from "react-native";
-import styles from "app/screens/Authentication/AuthStyle";
-import SeparatorLine from "app/components/SeparatorLine";
+import styles from "app/screens/Authentication/AuthStyle"; //Import AuthStyles, they can be reused here
 import { Button } from "react-native-elements";
-
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -34,26 +30,26 @@ export default class SettingsScreen extends React.Component {
                 <Text style={styles.logoText}>Settings</Text>
                 <Button
                   buttonStyle={styles.loginButton}
-                  onPress={() => this.props.navigation.navigate("Nerd")}
+                  onPress={() => this.props.navigation.navigate("Nerd")} //Redirect to NerdSettings Screen
                   title="Nerd Settings"
                 />
-                
                 <Button
                   buttonStyle={styles.loginButton}
-                  onPress={() => this.onLogoutPress()}
+                  onPress={() => this.onLogoutPress()} //Call the logout press function
                   title="Logout"
                 />
-
               </View>
-              <SeparatorLine />
             </View>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     );
   }
-  onLogoutPress(){
-    AsyncStorage.removeItem('userId');
-    this.props.navigation.navigate("Login");
+
+  //Log the user out and clear the local storage
+  onLogoutPress() {
+    AsyncStorage.removeItem("userId"); //Remove userId from local storage
+    AsyncStorage.removeItem("serverUrl"); //Remove serverUrl from local storage
+    this.props.navigation.navigate("Login"); //Redirect to login screen
   }
 }

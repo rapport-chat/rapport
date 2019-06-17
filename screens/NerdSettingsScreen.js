@@ -1,6 +1,6 @@
 import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
-import Colors from "app/constants/Colors";
+import { ExpoConfigView } from '@expo/samples'; //Import the ExpoConfigView from the expo package
+import Colors from "app/constants/Colors"; //Impor our color constants
 
 export default class NerdSettingsScreen extends React.Component {
   static navigationOptions = {
