@@ -1,5 +1,6 @@
 <img src="https://rapport-chat.github.io/rapport-logo.svg" width="auto" height="100" />
-### What is Rapport?
+
+### What is Rapport? 
 
 Rapport is a simple chat application written in react-native by [David Caudill](https://github.com/Kirboy) and [Kai Herrmann](https://github.com/kaiherrman) for a school project at the Berufliche Schulen Groß-Gerau.
 ___ 
